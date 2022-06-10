@@ -81,7 +81,11 @@ include_once './header.php';
 
                               if (!mysqli_error($con)) {
                                  echo '<center class="alert alert-success">Details saved successfully</center>';
-                                 header("Refresh:4;./select-year.php");
+                                 if ($_SESSION['role'] == 'staff') {
+                                    header("Refresh:4; url=./select-year.php");
+                                 } else {
+                                    header("Refresh:3; url=./supervisor-page.php");
+                                 }
                               } else {
                                  echo '<center class="alert alert-danger">There is an error..!</center>';
                                  die(mysqli_error($con));

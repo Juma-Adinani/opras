@@ -47,7 +47,7 @@ if (!isset($_SESSION['id'])) {
       </div>
     </nav>
     <main>
-      <section class="py-5 text-center container">
+      <section class="py-2 text-center container">
         <div class="row pb-2">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">MU-Opras Modules</h1>
@@ -60,64 +60,77 @@ if (!isset($_SESSION['id'])) {
       <div class="album py-5 bg-light">
         <div class="container">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 d-flex justify-content-center">
-            <div class="col">
-              <div class="card shadow-sm">
-                <img src="images/logo/mp.jpg" width="100%" height="225" alt="services photo" />
-                <div class="card-body">
-                  <h3 class="card-title text-secondary">Services</h3>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <a href="./personal-details.php" class="btn btn-sm btn-outline-secondary">
-                        Open
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
             <?php
-            if ($_SESSION['role'] != 'admin') {
+            $sql = $con->query("SELECT * FROM personal_details WHERE user_id = '" . $_SESSION['id'] . "'");
+            if (mysqli_num_rows($sql) == 0) {
             ?>
               <div class="col">
                 <div class="card shadow-sm">
-                  <img src="images/logo/p.webp" width="100%" height="225" alt="services photo" />
+                  <img src="images/logo/mp.jpg" width="100%" height="225" alt="services photo" />
                   <div class="card-body">
-                    <h3 class="card-title text-secondary">
-                      <?php if ($_SESSION['role'] == 'supervisor') {
-                        echo 'Assess';
-                      } else if ($_SESSION['role'] == 'staff') {
-                        echo 'Performance';
-                      } else {
-                        echo 'Comment';
-                      }; ?>
-                    </h3>
+                    <h3 class="card-title text-secondary">Services</h3>
                     <div class="d-flex justify-content-between align-items-center">
                       <div class="btn-group">
-                        <?php if ($_SESSION['role'] == 'supervisor') {
-                          echo '<a href="./supervisor-page.php" " class="btn btn-sm btn-outline-secondary">Open</a>';
-                        } else if ($_SESSION['role'] == 'staff') {
-                          if (isset($_POST['performance'])) {
-                            $sql = $con->query("SELECT * FROM year_preview WHERE user_id = '" . $_SESSION['id'] . "'");
-                            $row = mysqli_fetch_assoc($sql)['id'];
-                            $_SESSION['YearId'] = $row;
-                            header("location:./annual-review.php");
-                          }
-                        ?>
-                          <form action="" method="post">
-                            <input type="text" name="id" value="<?php echo $row; ?>" hidden>
-                            <button type="submit" name="performance" class="btn btn-outline-secondary btn-sm">Assess performance</button>
-                          </form>
-                        <?php
-                        } else {
-                          echo '<a href="./supervisor-page.php" " class="btn btn-sm btn-outline-secondary">Leave a comment</a>';
-                        }
-                        ?>
+                        <a href="./personal-details.php" class="btn btn-sm btn-outline-secondary">
+                          Open
+                        </a>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <?php
+            }
+            if ($_SESSION['role'] != 'admin') {
+
+              $sql = $con->query("SELECT * FROM personal_details WHERE user_id = '" . $_SESSION['id'] . "'");
+              if (mysqli_num_rows($sql) > 0) {
+              ?>
+                <div class="col">
+                  <div class="card shadow-sm">
+                    <img src="images/logo/p.webp" width="100%" height="225" alt="services photo" />
+                    <div class="card-body">
+                      <h3 class="card-title text-secondary">
+                        <?php if ($_SESSION['role'] == 'supervisor') {
+                          echo 'Assess';
+                        } else if ($_SESSION['role'] == 'staff') {
+                          echo 'Performance';
+                        } else if ($_SESSION['role'] == 'DVC') {
+                          echo 'Comment';
+                        } else {
+                          echo 'Report';
+                        }; ?>
+                      </h3>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          <?php if ($_SESSION['role'] == 'supervisor') {
+                            echo '<a href="./supervisor-page.php" " class="btn btn-sm btn-outline-secondary">Open</a>';
+                          } else if ($_SESSION['role'] == 'staff') {
+                            if (isset($_POST['performance'])) {
+                              $sql = $con->query("SELECT * FROM year_preview WHERE user_id = '" . $_SESSION['id'] . "'");
+                              $row = mysqli_fetch_assoc($sql)['id'];
+                              $_SESSION['YearId'] = $row;
+                              header("location:./annual-review.php");
+                            }
+                          ?>
+                            <form action="" method="post">
+                              <input type="text" name="id" value="<?php echo $row; ?>" hidden>
+                              <button type="submit" name="performance" class="btn btn-outline-secondary btn-sm">Assess performance</button>
+                            </form>
+                          <?php
+                          } else if ($_SESSION['role'] == 'HR') {
+                            echo '<a href="./generate-reports.php" " class="btn btn-sm btn-outline-secondary">Generate reports</a>';
+                          } else {
+                            echo '<a href="./supervisor-page.php" " class="btn btn-sm btn-outline-secondary">Leave a comment</a>';
+                          }
+                          ?>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             <?php
+              }
             }
             if ($_SESSION['role'] == 'admin') {
               echo '

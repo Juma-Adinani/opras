@@ -19,6 +19,19 @@ if (mysqli_num_rows($sql) == 0) {
     unset($_SESSION['commentMessage']);
 }
 
+if (isset($_POST['comment'])) {
+    if ($_SESSION['role'] == 'supervisor') {
+        $sql = $con->query("UPDATE opras SET supervisor_comment = '" . $_POST['superComment'] . "' WHERE id = '" . $_POST['id'] . "'");
+    } else if ($_SESSION['role'] == 'DVC') {
+        $sql = $con->query("UPDATE opras SET dvc_comment = '" . $_POST['dvc-comment'] . "' WHERE id = '" . $_POST['id'] . "'");
+    }
+    if (!mysqli_error($con)) {
+        header("Refresh:.1");
+    } else {
+        die(mysqli_error($con));
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,13 +68,14 @@ include './header.php';
                                 if (isset($_SESSION['commentMessage'])) {
                                     echo $_SESSION['commentMessage'];
                                 } else {
-                                    $sql = "SELECT firstname, surname, _year,SUM(annual_performance_review.agreed_mark) as totalAnnual, SUM(quality_attributes.agreed_mark) as totalAttributes 
-                                            FROM users, annual_performance_review, mid_review, agreement, opras_year,quality_attributes, year_preview
+                                    $sql = "SELECT opras.id as id, supervisor_comment, dvc_comment, firstname, surname, _year,SUM(annual_performance_review.agreed_mark) as totalAnnual
+                                            FROM users, annual_performance_review, mid_review, agreement, opras_year, year_preview, opras
                                             WHERE annual_performance_review.mid_review_id = mid_review.id
                                             AND year_preview.user_id = users.id
                                             AND mid_review.agreement_id = agreement.id
                                             AND agreement.aYear = year_preview.id
                                             AND year_preview.year_id = opras_year.id
+                                            AND opras.aYear = year_preview.id
                                             AND year_preview.id = '" . $_SESSION['YearId'] . "'";
                                     $result = mysqli_query($con, $sql);
                                     if (mysqli_error($con)) {
@@ -72,19 +86,33 @@ include './header.php';
                                     <div class="col-12">
                                         <div class="col-12 bg-white">
                                             <div class="py-2">
-                                                <h5><?php echo $row->firstname . '&nbsp;' . $row->surname; ?>'s opras (<?php echo $row->_year;?>)</h5>
+                                                <h5><?php echo $row->firstname . '&nbsp;' . $row->surname; ?>'s opras (<?php echo $row->_year; ?>)</h5>
                                                 <p></p>
-                                                <p>Annual performance review: <span class="h6"><?php echo $row->totalAnnual ;?>/30</span></p>
-                                                <p>Attribute performance review: <span class="h6">13/45</span></p>
+                                                <p>Annual performance review: <span class="h6"><?php echo $row->totalAnnual; ?>/30</span></p>
+                                                <!-- <p>Attribute performance review: <span class="h6">13/45</span></p> -->
                                             </div>
                                         </div><br>
                                         <div class="card shadow-sm">
                                             <div class="card-body">
                                                 <form action="" method="post">
-                                                    <label for="superid">Supervisor comment</label>
-                                                    <textarea name="super-id" id="superid" cols="30" rows="3" class="form-control"></textarea><br>
-                                                    <label for="dvccomment">DVC comment</label>
-                                                    <textarea name="dvc-comment" id="dvccomment" cols="30" rows="3" class="form-control"></textarea>
+                                                    <input type="text" value="<?php echo $row->id; ?> " name="id" hidden>
+                                                    <?php
+                                                    if ($_SESSION['role'] == 'supervisor') {
+                                                    ?>
+                                                        <label for="superid">Supervisor comment</label>
+                                                        <textarea name="superComment" id="superid" cols="30" rows="3" class="form-control"><?php echo $row->supervisor_comment; ?></textarea><br>
+                                                        <label for="dvccomment">DVC comment</label>
+                                                        <textarea name="dvc-comment" id="dvcComment" cols="30" rows="3" class="form-control" disabled><?php echo $row->dvc_comment; ?></textarea>
+                                                    <?php
+                                                    } else if ($_SESSION['role'] == 'DVC') {
+                                                    ?>
+                                                        <label for="superid">Supervisor comment</label>
+                                                        <textarea name="superComment" id="superid" cols="30" rows="3" class="form-control" disabled><?php echo $row->supervisor_comment; ?></textarea><br>
+                                                        <label for="dvccomment">DVC comment</label>
+                                                        <textarea name="dvc-comment" id="dvcComment" cols="30" rows="3" class="form-control"><?php echo $row->dvc_comment; ?></textarea>
+                                                    <?php
+                                                    }
+                                                    ?>
                                                     <div class="mt-5 col-12 d-flex justify-content-end">
                                                         <button type="submit" class="btn btn-secondary btn-sm" name="comment">save comment</button>
                                                     </div>

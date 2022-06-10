@@ -8,7 +8,7 @@ CREATE TABLE roles(
 );
 
 ##insert default roles
-INSERT INTO 
+INSERT INTO
     roles (role_type)
 VALUES
     ('admin'),
@@ -130,7 +130,6 @@ VALUES
     ('2022'),
     ('2023');
 
--- only a staff must fill this one so that to be able to take an opras
 CREATE TABLE year_preview (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     year_id INT NOT NULL,
@@ -157,7 +156,6 @@ CREATE TABLE mid_review(
     FOREIGN KEY (agreement_id) REFERENCES agreement (id) ON DELETE CASCADE
 );
 
--- EDIT CRITERIAS FROM mid_review and agreement_id
 CREATE TABLE revised_objectives(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     agreement_id INT NOT NULL,
@@ -195,8 +193,6 @@ VALUES
     ('LOYALITY'),
     ('INTEGRITY');
 
-
---quality attributes to be termed as attribute performance
 CREATE TABLE quality_attributes(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     quality VARCHAR(100) NOT NULL,
@@ -256,34 +252,12 @@ VALUES
         8
     );
 
--- CREATE TABLE attribute_perfomance(
---     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
---     quality_id INT NOT NULL,
---     staff_rate INT NOT NULL,
---     supervisor_rate INT NOT NULL,
---     agreed_mark INT NOT NULL,
---     FOREIGN KEY (quality_id) REFERENCES quality_attributes (id)
--- );
-
-
---remove attribute performance id and then replace with quality attributes id
 CREATE TABLE opras(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     aYear INT NOT NULL UNIQUE,
     supervisor_id INT NOT NULL,
+    supervisor_comment VARCHAR(200) NULL,
+    dvc_comment VARCHAR(200) NULL,
     FOREIGN KEY (aYear) REFERENCES year_preview (id),
-    FOREIGN KEY (supervisor_id) REFERENCES user_id (id)
+    FOREIGN KEY (supervisor_id) REFERENCES users (id)
 );
-
-
---staff comment removed to reduce some logic
-CREATE TABLE comments(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    opras_id INT NOT NULL,
-    supervisor_comment VARCHAR(500),
-    dvc_comment VARCHAR(500),
-    FOREIGN KEY (opras_id) REFERENCES opras (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
-);
-
--- after comment section then printf out (iframe)

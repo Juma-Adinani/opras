@@ -1,13 +1,9 @@
 <?php
 session_start();
-if ($_SESSION['role'] == 'staff') {
-    header("location:./login.php");
+if ($_SESSION['role'] != 'HR') {
+    header("location:./supervisor-page.php");
 }
 include './config/connect.php';
-$sql = $con->query("SELECT * FROM personal_details WHERE user_id = '".$_SESSION['id']."'");
-if(mysqli_num_rows($sql) == 0){
-    header("location:./personal-details.php");
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,16 +71,6 @@ if(mysqli_num_rows($sql) == 0){
                 <div class="container">
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 bg-muted">
                         <?php
-
-                        if (isset($_POST['assess'])) {
-                            $_SESSION['YearId'] = $_POST['id'];
-                            if ($_SESSION['role'] == 'supervisor') {
-                                header("location:./annual-review.php");
-                            } else {
-                                header("location:./comment-section.php");
-                            }
-                        }
-
                         $sql = $con->query("SELECT year_preview.id as id, firstname, surname, _year 
                                             FROM year_preview, users, opras_year 
                                             WHERE year_preview.user_id = users.id
@@ -101,19 +87,13 @@ if(mysqli_num_rows($sql) == 0){
                                     <p class="">Opras Year: <?php echo $row->_year; ?></p>
                                     <form action="" method="post">
                                         <input type="text" name="id" value="<?php echo $row->id; ?>" hidden>
-                                        <?php
-                                        if ($_SESSION['role'] == 'supervisor') {
-                                            echo '<button class="btn btn-outline-success btn-sm w-100" type="submit" name="assess">make assessment</button>';
-                                        } else {
-                                            echo '<button class="btn btn-outline-success btn-sm w-100" type="submit" name="assess">Comment now</button>';
-                                        }
-                                        ?>
+                                        <button class="btn btn-outline-success btn-sm w-100" type="submit" name="assess">Generate report</button>
                                     </form>
                                 </div>
                         <?php
                             }
                         } else {
-                            echo '<div class="alert alert-warning col-12">no available opras yet</div>';
+                            echo '<div class="alert alert-warning col-12">No available opras to generate report on</div>';
                         }
                         ?>
                     </div>

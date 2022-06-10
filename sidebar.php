@@ -28,7 +28,7 @@
                         <span>Reports</span></a>
                 </li>
             <?php
-            } else {
+            } else if ($_SESSION['role'] == 'staff') {
             ?>
                 <li class="active">
                     <a href="./homepage.php" class=""><i class="fa fa-home text-danger"></i> <span>Home</span></a>
@@ -56,6 +56,21 @@
                     <a href="./attribute-performance.php">
                         <i class="fa fa-bar-chart red_color"></i>
                         <span>Attribute performance</span></a>
+                </li>
+                <li>
+                    <a href="./reports.php"><i class="fa fa-cog yellow_color"></i>
+                        <span>Reports</span></a>
+                </li>
+            <?php
+            } else {
+            ?>
+                <li class="active">
+                    <a href="./supervisor-page.php" class=""><i class="fa fa-home text-danger"></i> <span>Home</span></a>
+                </li>
+                <li>
+                    <a href="./comment-section.php">
+                        <i class="fa fa-edit purple_color"></i>
+                        <span>Comments</span></a>
                 </li>
                 <li>
                     <a href="./reports.php"><i class="fa fa-cog yellow_color"></i>
