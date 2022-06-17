@@ -104,7 +104,10 @@ if ($_SESSION['role'] == 'supervisor' || $_SESSION['role'] == 'DVC') {
                             </button>
                             <hr class="my-4" />
                             <?php
-                            $sql = $con->query("SELECT year_preview.id as previewId, _year FROM year_preview, opras_year WHERE year_preview.year_id = opras_year.id AND user_id = '" . $_SESSION['id'] . "' ORDER BY _year DESC");
+                            $sql = $con->query("SELECT year_preview.id as previewId, _year 
+                                                FROM year_preview, opras_year 
+                                                WHERE year_preview.year_id = opras_year.id 
+                                                AND user_id = '" . $_SESSION['id'] . "' ORDER BY _year DESC");
                             if (mysqli_num_rows($sql) > 0) {
                             ?>
                                 <div class="text-primary lead">Proceed with the current year <br>

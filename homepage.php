@@ -106,17 +106,18 @@ if (!isset($_SESSION['id'])) {
                           <?php if ($_SESSION['role'] == 'supervisor') {
                             echo '<a href="./supervisor-page.php" " class="btn btn-sm btn-outline-secondary">Open</a>';
                           } else if ($_SESSION['role'] == 'staff') {
-                            if (isset($_POST['performance'])) {
-                              $sql = $con->query("SELECT * FROM year_preview WHERE user_id = '" . $_SESSION['id'] . "'");
-                              $row = mysqli_fetch_assoc($sql)['id'];
-                              $_SESSION['YearId'] = $row;
-                              header("location:./annual-review.php");
-                            }
+                            // if (isset($_POST['performance'])) {
+                            //   $sql = $con->query("SELECT * FROM year_preview WHERE user_id = '" . $_SESSION['id'] . "'");
+                            //   $row = mysqli_fetch_assoc($sql)['id'];
+                            //   $_SESSION['YearId'] = $row;
+                            //   header("location:./annual-review.php");
+                            // }
                           ?>
-                            <form action="" method="post">
+                            <a href="./select-year.php" class="btn btn-outline-secondary btn-sm">Assess performance</a>
+                            <!-- <form action="" method="post">
                               <input type="text" name="id" value="<?php echo $row; ?>" hidden>
                               <button type="submit" name="performance" class="btn btn-outline-secondary btn-sm">Assess performance</button>
-                            </form>
+                            </form> -->
                           <?php
                           } else if ($_SESSION['role'] == 'HR') {
                             echo '<a href="./generate-reports.php" " class="btn btn-sm btn-outline-secondary">Generate reports</a>';
